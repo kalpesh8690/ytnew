@@ -5,532 +5,363 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YouTube to MP3 Converter</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #4f46e5;
-            --primary-hover: #4338ca;
-            --bg-color: #0f172a;
-            --card-bg: rgba(255, 255, 255, 0.05);
-            --text-color: #f8fafc;
-            --text-secondary: #94a3b8;
-            --border-color: rgba(255, 255, 255, 0.1);
-            --border-radius: 16px;
-            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            --glass-bg: rgba(255, 255, 255, 0.05);
-            --glass-border: rgba(255, 255, 255, 0.1);
-            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-            --success-color: #22c55e;
-            --error-color: #ef4444;
+            --primary-color: #4F46E5;
+            --primary-hover: #4338CA;
+            --bg-color: #0F172A;
+            --card-bg: rgba(30, 41, 59, 0.5);
+            --text-primary: #F8FAFC;
+            --text-secondary: #94A3B8;
+            --border-color: rgba(148, 163, 184, 0.1);
+            --error-color: #EF4444;
+            --success-color: #10B981;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
         }
 
         body {
-            font-family: 'Inter', system-ui, -apple-system, sans-serif;
-            background: linear-gradient(135deg, var(--bg-color) 0%, #1e293b 100%);
-            color: var(--text-color);
-            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: var(--text-primary);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            padding: 2rem;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
             width: 100%;
-            background: var(--glass-bg);
-            padding: 2.5rem;
-            border-radius: var(--border-radius);
-            box-shadow: var(--glass-shadow);
+        }
+
+        nav {
+            background: rgba(15, 23, 42, 0.8);
             backdrop-filter: blur(10px);
-            border: 1px solid var(--glass-border);
-            transition: var(--transition);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            text-decoration: none;
         }
 
         .nav-links {
             display: flex;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-links a.active {
+            color: var(--primary-color);
+        }
+
+        .main-content {
+            flex: 1;
+            padding: 2rem 0;
+        }
+
+        .converter-section {
+            background: var(--card-bg);
+            border-radius: 1rem;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--border-color);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            color: var(--text-primary);
+        }
+
+        .url-input {
+            display: flex;
             gap: 1rem;
             margin-bottom: 2rem;
-            justify-content: center;
         }
 
-        .nav-link {
-            color: var(--text-color);
-            text-decoration: none;
-            padding: 0.5rem 1rem;
-            border-radius: var(--border-radius);
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            transition: var(--transition);
-        }
-
-        .nav-link:hover {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        .nav-link.active {
-            background: var(--primary-color);
-            border-color: var(--primary-color);
-        }
-
-        h1 {
-            color: var(--text-color);
-            margin-bottom: 1rem;
-            font-size: 2.5rem;
-            text-align: center;
-            font-weight: 700;
-            background: linear-gradient(135deg, #4f46e5, #818cf8);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        }
-
-        .description {
-            margin-bottom: 2.5rem;
-            color: var(--text-secondary);
-            text-align: center;
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-            line-height: 1.7;
-        }
-
-        .url-input-container {
-            position: relative;
-            width: 100%;
-            margin-bottom: 2rem;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 1.25rem;
-            border: 2px solid var(--border-color);
-            border-radius: var(--border-radius);
+        .url-input input {
+            flex: 1;
+            padding: 0.75rem 1rem;
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            background: rgba(15, 23, 42, 0.5);
+            color: var(--text-primary);
             font-size: 1rem;
-            transition: var(--transition);
-            background: var(--glass-bg);
-            color: var(--text-color);
-            backdrop-filter: blur(10px);
+            transition: border-color 0.2s;
         }
 
-        input[type="text"]::placeholder {
-            color: var(--text-secondary);
-        }
-
-        input[type="text"]:focus {
+        .url-input input:focus {
             outline: none;
             border-color: var(--primary-color);
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
         }
 
-        .btn-convert {
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+        .url-input button {
+            padding: 0.75rem 1.5rem;
+            background: var(--primary-color);
             color: white;
             border: none;
-            padding: 1.25rem 2rem;
-            border-radius: var(--border-radius);
-            font-size: 1rem;
-            font-weight: 600;
+            border-radius: 0.5rem;
+            font-weight: 500;
             cursor: pointer;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-            width: 100%;
+            transition: background-color 0.2s;
         }
 
-        .btn-convert:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+        .url-input button:hover {
+            background: var(--primary-hover);
         }
 
-        .btn-convert:disabled {
+        .url-input button:disabled {
             background: var(--text-secondary);
             cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
         }
 
         .video-info {
             display: none;
-            margin-top: 2.5rem;
+            background: rgba(15, 23, 42, 0.5);
+            border-radius: 0.5rem;
             padding: 1.5rem;
-            background: var(--glass-bg);
-            border-radius: var(--border-radius);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(10px);
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
         }
 
         .video-info.active {
             display: block;
-            animation: fadeIn 0.5s ease-out;
         }
 
-        .video-preview {
-            display: flex;
-            gap: 2rem;
-            margin-bottom: 2rem;
-            align-items: flex-start;
-            background: var(--glass-bg);
-            padding: 1.5rem;
-            border-radius: var(--border-radius);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(10px);
-            min-height: 202px;
-        }
-
-        .thumbnail-container {
-            position: relative;
-            width: 360px;
-            height: 202px;
-            border-radius: var(--border-radius);
-            overflow: hidden;
-            background: rgba(0, 0, 0, 0.2);
-        }
-
-        .thumbnail {
+        .video-thumbnail {
             width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: var(--transition);
-            opacity: 0;
+            max-width: 640px;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+            position: relative;
         }
 
-        .thumbnail.loaded {
-            opacity: 1;
+        .video-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
         }
 
-        .duration-badge {
+        .video-duration {
             position: absolute;
             bottom: 0.5rem;
             right: 0.5rem;
             background: rgba(0, 0, 0, 0.8);
             color: white;
             padding: 0.25rem 0.5rem;
-            border-radius: 4px;
+            border-radius: 0.25rem;
             font-size: 0.875rem;
-            font-weight: 500;
         }
 
-        .video-details {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
+        .quality-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 1rem;
-            min-height: 202px;
-        }
-
-        .video-title {
-            font-size: 1.5rem;
-            font-weight: 600;
-            color: var(--text-color);
-            line-height: 1.4;
-            margin: 0;
-        }
-
-        .audio-quality {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
         }
 
         .quality-option {
-            flex: 1;
-            padding: 1rem;
-            border: 2px solid var(--border-color);
-            border-radius: var(--border-radius);
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-color);
+            border-radius: 0.5rem;
+            padding: 1.5rem;
             cursor: pointer;
-            transition: var(--transition);
-            background: var(--glass-bg);
-            text-align: center;
+            transition: all 0.2s;
         }
 
         .quality-option:hover {
             border-color: var(--primary-color);
             transform: translateY(-2px);
-            box-shadow: var(--box-shadow);
-            background: rgba(255, 255, 255, 0.1);
         }
 
         .quality-option.selected {
-            background: rgba(79, 70, 229, 0.1);
             border-color: var(--primary-color);
+            background: rgba(79, 70, 229, 0.1);
         }
 
-        .quality-title {
-            font-weight: 600;
+        .quality-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
             margin-bottom: 0.5rem;
+        }
+
+        .quality-name {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .quality-badge {
+            background: var(--primary-color);
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.875rem;
         }
 
         .quality-description {
+            color: var(--text-secondary);
             font-size: 0.875rem;
-            color: var(--text-secondary);
         }
 
-        .progress-container {
+        .download-button {
             display: none;
-            margin-top: 1.5rem;
-            padding: 1.5rem;
-            background: var(--glass-bg);
-            border-radius: var(--border-radius);
-            border: 1px solid var(--glass-border);
-            backdrop-filter: blur(10px);
-        }
-
-        .progress-container.active {
-            display: block;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        .progress-bar {
             width: 100%;
-            height: 8px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 4px;
-            overflow: hidden;
-            margin-bottom: 0.5rem;
+            padding: 1rem;
+            background: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 1.5rem;
         }
 
-        .progress-fill {
-            height: 100%;
-            background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
-            width: 0%;
-            transition: width 0.3s ease-out;
+        .download-button:hover {
+            background: var(--primary-hover);
         }
 
-        .progress-text {
-            display: flex;
-            justify-content: space-between;
-            color: var(--text-secondary);
-            font-size: 0.9rem;
+        .download-button:disabled {
+            background: var(--text-secondary);
+            cursor: not-allowed;
         }
 
-        .progress-status {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            margin-top: 0.5rem;
-            text-align: center;
+        .error-message {
+            color: var(--error-color);
+            margin-top: 1rem;
+            display: none;
         }
 
-        @keyframes fadeIn {
-            from { 
-                opacity: 0; 
-                transform: translateY(20px);
-            }
-            to { 
-                opacity: 1; 
-                transform: translateY(0);
-            }
+        .error-message.active {
+            display: block;
         }
 
         @media (max-width: 768px) {
-            body {
+            .container {
                 padding: 1rem;
             }
 
-            .container {
-                padding: 1.5rem;
-            }
-
-            h1 {
-                font-size: 2rem;
-            }
-
-            .video-preview {
+            .nav-content {
                 flex-direction: column;
-                align-items: center;
-                gap: 1.5rem;
-            }
-
-            .thumbnail-container {
-                width: 100%;
-                max-width: 360px;
-            }
-
-            .video-details {
+                gap: 1rem;
                 text-align: center;
             }
 
-            .audio-quality {
+            .nav-links {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .url-input {
                 flex-direction: column;
+            }
+
+            .url-input button {
+                width: 100%;
+            }
+
+            .quality-options {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="nav-links">
-            <a href="/" class="nav-link">Home</a>
-            <a href="/youtube-to-mp3" class="nav-link active">YouTube to MP3</a>
-            <a href="/youtube-to-video" class="nav-link">YouTube to Video</a>
+    <nav>
+        <div class="nav-content">
+            <a href="/" class="logo">YT Converter</a>
+            <div class="nav-links">
+                <a href="/" class="active">Home</a>
+                <a href="/youtube-to-mp3">MP3</a>
+                <a href="/youtube-to-video">Video</a>
+            </div>
         </div>
-        <h1>YouTube to MP3 Converter</h1>
-        <p class="description">Convert your favorite YouTube videos to high-quality MP3 audio files. Perfect for music and podcasts.</p>
-        
-        <div class="url-input-container">
-            <input type="text" id="url" placeholder="https://www.youtube.com/watch?v=..." required>
-            <button class="btn-convert" onclick="getFormats()">
-                <i class="fas fa-search"></i>Get Audio Formats
-            </button>
-        </div>
+    </nav>
 
-        <div class="video-info" id="videoInfo">
-            <div class="video-preview">
-                <div class="thumbnail-container">
-                    <img class="thumbnail" id="thumbnail" src="" alt="Video thumbnail">
-                    <div class="duration-badge" id="duration"></div>
+    <div class="main-content">
+        <div class="container">
+            <div class="converter-section">
+                <h1 class="section-title">YouTube to MP3 Converter</h1>
+                <div class="url-input">
+                    <input type="text" id="url" placeholder="Paste YouTube URL here" />
+                    <button onclick="getFormats()" id="getFormatsBtn">Get Audio Formats</button>
                 </div>
-                <div class="video-details">
+
+                <div class="video-info" id="videoInfo">
+                    <img src="" alt="Video thumbnail" class="video-thumbnail" id="thumbnail" />
+                    <div class="video-duration" id="duration"></div>
                     <h2 class="video-title" id="title"></h2>
-                    <div class="audio-quality">
-                        <div class="quality-option" onclick="selectQuality('best')">
-                            <div class="quality-title">Best Quality</div>
-                            <div class="quality-description">320 kbps</div>
+                    
+                    <div class="quality-options" id="qualityOptions">
+                        <div class="quality-option" data-quality="best">
+                            <div class="quality-header">
+                                <span class="quality-name">Best Quality</span>
+                                <span class="quality-badge">320 kbps</span>
+                            </div>
+                            <p class="quality-description">Highest quality audio for the best listening experience</p>
                         </div>
-                        <div class="quality-option" onclick="selectQuality('good')">
-                            <div class="quality-title">Good Quality</div>
-                            <div class="quality-description">192 kbps</div>
+                        <div class="quality-option" data-quality="good">
+                            <div class="quality-header">
+                                <span class="quality-name">Good Quality</span>
+                                <span class="quality-badge">192 kbps</span>
+                            </div>
+                            <p class="quality-description">Balanced quality and file size</p>
                         </div>
-                        <div class="quality-option" onclick="selectQuality('normal')">
-                            <div class="quality-title">Normal Quality</div>
-                            <div class="quality-description">128 kbps</div>
+                        <div class="quality-option" data-quality="normal">
+                            <div class="quality-header">
+                                <span class="quality-name">Normal Quality</span>
+                                <span class="quality-badge">128 kbps</span>
+                            </div>
+                            <p class="quality-description">Smaller file size, suitable for most devices</p>
                         </div>
                     </div>
+
+                    <button class="download-button" id="downloadBtn" onclick="downloadMP3()">Download MP3</button>
+                    <div class="error-message" id="errorMessage"></div>
                 </div>
             </div>
-
-            <button id="downloadBtn" class="btn-convert" style="display: none;">
-                <i class="fas fa-download"></i>Download MP3
-            </button>
-        </div>
-
-        <div class="progress-container" id="progressContainer">
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <div class="progress-text">
-                <span id="progressPercentage">0%</span>
-                <span id="downloadSpeed">0 MB/s</span>
-            </div>
-            <div class="progress-status" id="progressStatus">Starting download...</div>
-        </div>
-    </div>
-
-    <div id="error" style="display: none;">
-        <div class="alert alert-danger">
-            <h5><i class="fas fa-exclamation-triangle"></i> Error</h5>
-            <p>An error occurred while downloading.</p>
         </div>
     </div>
 
     <script>
+        let currentUrl = '';
         let selectedQuality = null;
-        let videoId = null;
-
-        async function getFormats() {
-            const url = document.getElementById('url').value;
-            if (!url) {
-                alert('Please enter a YouTube URL');
-                return;
-            }
-
-            const progressContainer = document.getElementById('progressContainer');
-            const progressFill = document.getElementById('progressFill');
-            progressContainer.classList.add('active');
-            progressFill.style.width = '0%';
-
-            try {
-                const response = await fetch('/get-formats', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `url=${encodeURIComponent(url)}`
-                });
-
-                const data = await response.json();
-                if (data.error) {
-                    alert(data.error);
-                    return;
-                }
-
-                videoId = data.video_id;
-                document.getElementById('thumbnail').src = data.thumbnail;
-                document.getElementById('title').textContent = data.title;
-                document.getElementById('duration').textContent = formatDuration(data.duration);
-                document.getElementById('videoInfo').classList.add('active');
-                startProgressCheck();
-            } catch (error) {
-                alert('Error getting video info: ' + error.message);
-            }
-        }
-
-        function selectQuality(quality) {
-            selectedQuality = quality;
-            document.querySelectorAll('.quality-option').forEach(opt => {
-                opt.classList.remove('selected');
-            });
-            event.currentTarget.classList.add('selected');
-            document.getElementById('downloadBtn').style.display = 'block';
-        }
-
-        async function downloadMP3() {
-            const url = document.getElementById('url').value;
-            const quality = document.querySelector('.quality-option.selected')?.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
-            
-            if (!url) {
-                showError('Please enter a YouTube URL');
-                return;
-            }
-            
-            if (!quality) {
-                showError('Please select an audio quality');
-                return;
-            }
-            
-            try {
-                showProgress();
-                const response = await fetch('/download', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `url=${encodeURIComponent(url)}&format=mp3&quality=${quality}`
-                });
-                
-                const data = await response.json();
-                
-                if (response.ok) {
-                    // Create a download link
-                    const link = document.createElement('a');
-                    link.href = window.URL.createObjectURL(await response.blob());
-                    link.download = data.filename || 'audio.mp3';
-                    document.body.appendChild(link);
-                    link.click();
-                    document.body.removeChild(link);
-                    window.URL.revokeObjectURL(link.href);
-                } else {
-                    showError(data.error || 'Failed to download MP3');
-                }
-            } catch (error) {
-                showError('An error occurred while downloading');
-                console.error('Download error:', error);
-            } finally {
-                hideProgress();
-            }
-        }
 
         function formatDuration(seconds) {
             const hours = Math.floor(seconds / 3600);
@@ -543,46 +374,99 @@
             return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
         }
 
-        async function startProgressCheck() {
-            if (!videoId) return;
+        async function getFormats() {
+            const urlInput = document.getElementById('url');
+            const getFormatsBtn = document.getElementById('getFormatsBtn');
+            const videoInfo = document.getElementById('videoInfo');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            if (!urlInput.value.trim()) {
+                errorMessage.textContent = 'Please enter a YouTube URL';
+                errorMessage.classList.add('active');
+                return;
+            }
 
-            const progressFill = document.getElementById('progressFill');
-            const progressPercentage = document.getElementById('progressPercentage');
-            const downloadSpeed = document.getElementById('downloadSpeed');
-            const progressStatus = document.getElementById('progressStatus');
+            getFormatsBtn.disabled = true;
+            errorMessage.classList.remove('active');
+            
+            try {
+                const response = await fetch('/get-formats', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `url=${encodeURIComponent(urlInput.value.trim())}`
+                });
 
-            while (true) {
-                try {
-                    const response = await fetch(`/progress/${videoId}`);
-                    const data = await response.json();
-                    
-                    progressFill.style.width = `${data.progress}%`;
-                    progressPercentage.textContent = `${data.progress}%`;
-                    downloadSpeed.textContent = data.speed ? `${(data.speed / (1024 * 1024)).toFixed(2)} MB/s` : '0 MB/s';
-                    
-                    if (data.status === 'finished') {
-                        progressStatus.textContent = 'Download completed!';
-                        break;
-                    }
-                } catch (error) {
-                    console.error('Error checking progress:', error);
+                const data = await response.json();
+                
+                if (data.error) {
+                    throw new Error(data.error);
                 }
-                await new Promise(resolve => setTimeout(resolve, 1000));
+
+                currentUrl = urlInput.value.trim();
+                
+                // Update video info
+                document.getElementById('thumbnail').src = data.thumbnail;
+                document.getElementById('title').textContent = data.title;
+                document.getElementById('duration').textContent = formatDuration(data.duration);
+                
+                // Show video info and download button
+                videoInfo.classList.add('active');
+                document.getElementById('downloadBtn').style.display = 'block';
+                
+            } catch (error) {
+                errorMessage.textContent = error.message;
+                errorMessage.classList.add('active');
+            } finally {
+                getFormatsBtn.disabled = false;
             }
         }
 
-        function showError(message) {
-            const errorDiv = document.getElementById('error');
-            errorDiv.innerHTML = `
-                <div class="alert alert-danger">
-                    <h5><i class="fas fa-exclamation-triangle"></i> Error</h5>
-                    <p>${message}</p>
-                </div>
-            `;
-            errorDiv.style.display = 'block';
+        function downloadMP3() {
+            if (!selectedQuality) {
+                const errorMessage = document.getElementById('errorMessage');
+                errorMessage.textContent = 'Please select a quality option';
+                errorMessage.classList.add('active');
+                return;
+            }
+
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/download';
+
+            const urlInput = document.createElement('input');
+            urlInput.type = 'hidden';
+            urlInput.name = 'url';
+            urlInput.value = currentUrl;
+
+            const formatInput = document.createElement('input');
+            formatInput.type = 'hidden';
+            formatInput.name = 'format';
+            formatInput.value = 'mp3';
+
+            const qualityInput = document.createElement('input');
+            qualityInput.type = 'hidden';
+            qualityInput.name = 'quality';
+            qualityInput.value = selectedQuality;
+
+            form.appendChild(urlInput);
+            form.appendChild(formatInput);
+            form.appendChild(qualityInput);
+
+            document.body.appendChild(form);
+            form.submit();
+            document.body.removeChild(form);
         }
 
-        document.getElementById('downloadBtn').onclick = downloadMP3;
+        // Quality selection
+        document.querySelectorAll('.quality-option').forEach(option => {
+            option.addEventListener('click', () => {
+                document.querySelectorAll('.quality-option').forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                selectedQuality = option.dataset.quality;
+            });
+        });
     </script>
 </body>
 </html> 

@@ -3,11 +3,8 @@ import yt_dlp
 import os
 from moviepy.editor import VideoFileClip, AudioFileClip
 import tempfile
-import threading
-import time
-from functools import lru_cache
 import logging
-from concurrent.futures import ThreadPoolExecutor
+from functools import lru_cache
 import hashlib
 
 # Configure logging
@@ -24,12 +21,6 @@ CACHE_TTL = 3600  # 1 hour in seconds
 # Create download folder if it doesn't exist
 os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 
-# Global dictionary to store download progress
-download_progress = {}
-
-# Thread pool for background tasks
-executor = ThreadPoolExecutor(max_workers=3)
-
 def get_cache_key(url):
     """Generate a cache key for the URL"""
     return hashlib.md5(url.encode()).hexdigest()
@@ -41,15 +32,11 @@ def get_video_info(url):
         "quiet": True,
         "no_warnings": True,
         "extract_flat": True,
-        "progress_hooks": [progress_hook],
     }
     
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         try:
             info = ydl.extract_info(url, download=False)
-            video_id = info.get('id', 'unknown')
-            download_progress[video_id] = {'progress': 0, 'status': 'starting'}
-            
             formats = []
             audio_formats = []
             
@@ -85,33 +72,11 @@ def get_video_info(url):
                 'thumbnail': info.get('thumbnail'),
                 'duration': info.get('duration'),
                 'formats': formats,
-                'audio_formats': audio_formats,
-                'video_id': video_id
+                'audio_formats': audio_formats
             }
         except Exception as e:
             logger.error(f"Error extracting video info: {str(e)}")
             return {'error': str(e)}
-
-def progress_hook(d):
-    """Update download progress"""
-    if d['status'] == 'downloading':
-        video_id = d.get('info_dict', {}).get('id', 'unknown')
-        total_bytes = d.get('total_bytes')
-        downloaded_bytes = d.get('downloaded_bytes', 0)
-        
-        if total_bytes:
-            progress = (downloaded_bytes / total_bytes) * 100
-            download_progress[video_id] = {
-                'progress': round(progress, 2),
-                'speed': d.get('speed', 0),
-                'status': 'downloading'
-            }
-    elif d['status'] == 'finished':
-        video_id = d.get('info_dict', {}).get('id', 'unknown')
-        download_progress[video_id] = {
-            'progress': 100,
-            'status': 'finished'
-        }
 
 def download_video(url, format_id, merge_audio=False):
     """Download video with error handling and cleanup"""
@@ -121,7 +86,6 @@ def download_video(url, format_id, merge_audio=False):
             "format": format_id,
             "outtmpl": os.path.join(temp_dir, "%(title)s.%(ext)s"),
             "merge_output_format": "mp4",
-            "progress_hooks": [progress_hook],
         }
 
         if merge_audio:
@@ -134,7 +98,6 @@ def download_video(url, format_id, merge_audio=False):
             audio_opts = {
                 "format": "bestaudio[ext=m4a]/bestaudio[ext=m4a]",
                 "outtmpl": os.path.join(temp_dir, "%(title)s_audio.%(ext)s"),
-                "progress_hooks": [progress_hook],
             }
             
             with yt_dlp.YoutubeDL(audio_opts) as ydl:
@@ -183,75 +146,40 @@ def download_video(url, format_id, merge_audio=False):
         except Exception as e:
             logger.error(f"Error removing temp directory: {str(e)}")
 
-def get_direct_url(url, format_id):
-    ydl_opts = {
-        "quiet": True,
-        "no_warnings": True,
-        "extract_flat": True,
-        "format": format_id,
-    }
-    
-    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-        try:
-            info = ydl.extract_info(url, download=False)
-            return {
-                'url': info.get('url'),
-                'title': info.get('title'),
-                'ext': info.get('ext')
-            }
-        except Exception as e:
-            return {'error': str(e)}
-
 def download_mp3(url, quality='best'):
     """Download audio and convert to MP3 with specified quality"""
     temp_dir = tempfile.mkdtemp()
     output_path = None
     try:
-        # Map quality options to format strings
         quality_formats = {
             'best': 'bestaudio[ext=m4a]/bestaudio[ext=m4a]',
             'good': 'bestaudio[ext=m4a][abr<=192]/bestaudio[ext=m4a][abr<=192]',
             'normal': 'bestaudio[ext=m4a][abr<=128]/bestaudio[ext=m4a][abr<=128]'
         }
         
-        # Download audio
         ydl_opts = {
             "format": quality_formats.get(quality, 'bestaudio[ext=m4a]/bestaudio[ext=m4a]'),
             "outtmpl": os.path.join(temp_dir, "%(title)s.%(ext)s"),
-            "progress_hooks": [progress_hook],
         }
         
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=True)
             audio_path = ydl.prepare_filename(info)
             
-            # Convert to MP3 with specified quality
             output_path = os.path.join(temp_dir, os.path.splitext(os.path.basename(audio_path))[0] + '.mp3')
             
             try:
-                # Load the audio file using moviepy
                 audio = AudioFileClip(audio_path)
+                bitrates = {'best': 320, 'good': 192, 'normal': 128}
                 
-                # Map quality options to bitrate
-                bitrates = {
-                    'best': 320,
-                    'good': 192,
-                    'normal': 128
-                }
-                
-                # Write the audio file with specified bitrate
                 audio.write_audiofile(
                     output_path,
                     bitrate=f"{bitrates.get(quality, 320)}k",
                     codec='libmp3lame'
                 )
                 
-                # Close the audio file
                 audio.close()
-                
-                # Clean up the original audio file
-                if os.path.exists(audio_path):
-                    os.remove(audio_path)
+                os.remove(audio_path)
                 
                 if not os.path.exists(output_path):
                     raise Exception("MP3 file was not created successfully")
@@ -265,7 +193,6 @@ def download_mp3(url, quality='best'):
         logger.error(f"Error downloading MP3: {str(e)}")
         raise
     finally:
-        # Only clean up if we're not returning the output file
         if output_path and not os.path.exists(output_path):
             try:
                 for file in os.listdir(temp_dir):
@@ -303,11 +230,6 @@ def get_formats():
     except Exception as e:
         logger.error(f"Error getting formats: {str(e)}")
         return jsonify({"error": str(e)}), 500
-
-@app.route("/progress/<video_id>")
-def get_progress(video_id):
-    progress = download_progress.get(video_id, {'progress': 0, 'status': 'unknown'})
-    return jsonify(progress)
 
 @app.route("/download", methods=["POST"])
 def download():
