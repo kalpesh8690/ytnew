@@ -5,27 +5,388 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YouTube Video Downloader</title>
     <style>
+        :root {
+            --primary-color: #ff0000;
+            --primary-hover: #cc0000;
+            --bg-color: #f9f9f9;
+            --text-color: #333;
+            --border-radius: 8px;
+            --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background: white;
+            padding: 2rem;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
             text-align: center;
-            margin: 50px;
         }
-        input {
-            width: 300px;
-            padding: 10px;
-            margin: 10px;
+
+        .description {
+            margin-bottom: 2rem;
+            color: #666;
+            text-align: center;
         }
+
+        .download-form {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .input-group {
+            position: relative;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
         button {
-            padding: 10px;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 1rem;
+            border-radius: var(--border-radius);
+            font-size: 1rem;
             cursor: pointer;
+            transition: background-color 0.3s ease;
+            font-weight: 600;
+        }
+
+        button:hover {
+            background-color: var(--primary-hover);
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .loading {
+            display: none;
+            margin-top: 1rem;
+            color: #666;
+            text-align: center;
+        }
+
+        .loading.active {
+            display: block;
+        }
+
+        .error {
+            color: #dc3545;
+            margin-top: 1rem;
+            display: none;
+            padding: 0.75rem;
+            background-color: #ffe6e6;
+            border-radius: var(--border-radius);
+            text-align: center;
+        }
+
+        .video-info {
+            display: none;
+            margin-top: 2rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+        }
+
+        .video-info.active {
+            display: block;
+        }
+
+        .video-preview {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+            align-items: flex-start;
+        }
+
+        .thumbnail {
+            width: 320px;
+            height: 180px;
+            border-radius: var(--border-radius);
+            object-fit: cover;
+            box-shadow: var(--box-shadow);
+        }
+
+        .video-details {
+            flex: 1;
+        }
+
+        .video-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-color);
+        }
+
+        .video-duration {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .format-options {
+            display: none;
+            margin-top: 1rem;
+        }
+
+        .format-options.active {
+            display: block;
+        }
+
+        .format-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .format-option {
+            padding: 0.75rem;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .format-option:hover {
+            border-color: var(--primary-color);
+            background-color: #fff5f5;
+        }
+
+        .format-option.selected {
+            border-color: var(--primary-color);
+            background-color: #fff5f5;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .video-preview {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .thumbnail {
+                width: 100%;
+                max-width: 320px;
+            }
+
+            .video-details {
+                text-align: center;
+            }
+
+            .format-list {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
-    <h2>YouTube Video Downloader</h2>
-    <form method="POST">
-        <input type="text" name="url" placeholder="Enter YouTube Video URL" required>
-        <button type="submit">Download</button>
-    </form>
+    <div class="container">
+        <h1>YouTube Video Downloader</h1>
+        <p class="description">Enter a YouTube video URL below to download it in your preferred quality.</p>
+        
+        <form method="POST" class="download-form" id="downloadForm">
+            <div class="input-group">
+                <input type="text" 
+                       name="url" 
+                       id="videoUrl"
+                       placeholder="https://www.youtube.com/watch?v=..." 
+                       required
+                       pattern="^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+"
+                       title="Please enter a valid YouTube URL">
+            </div>
+            <button type="submit" id="checkBtn">Check Available Formats</button>
+        </form>
+
+        <div class="video-info" id="videoInfo">
+            <div class="video-preview">
+                <img class="thumbnail" id="videoThumbnail" src="" alt="Video thumbnail">
+                <div class="video-details">
+                    <h2 class="video-title" id="videoTitle"></h2>
+                    <div class="video-duration" id="videoDuration"></div>
+                </div>
+            </div>
+            <div class="format-options" id="formatOptions">
+                <div class="format-list" id="formatList"></div>
+                <button type="button" id="downloadBtn" style="display: none; margin-top: 1rem;">Download Selected Quality</button>
+            </div>
+        </div>
+
+        <div class="loading" id="loadingIndicator">
+            Processing your request... Please wait.
+        </div>
+
+        <div class="error" id="errorMessage"></div>
+    </div>
+
+    <script>
+        let currentUrl = '';
+        let selectedFormat = null;
+
+        function formatDuration(seconds) {
+            const hours = Math.floor(seconds / 3600);
+            const minutes = Math.floor((seconds % 3600) / 60);
+            const remainingSeconds = seconds % 60;
+            
+            if (hours > 0) {
+                return `${hours}:${minutes.toString().padStart(2, '0')}:${remainingSeconds.toString().padStart(2, '0')}`;
+            }
+            return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
+        }
+
+        document.getElementById('downloadForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const url = document.getElementById('videoUrl').value;
+            currentUrl = url;
+            
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const checkBtn = document.getElementById('checkBtn');
+            const errorMessage = document.getElementById('errorMessage');
+            const videoInfo = document.getElementById('videoInfo');
+            
+            loadingIndicator.classList.add('active');
+            checkBtn.disabled = true;
+            errorMessage.style.display = 'none';
+            
+            try {
+                const response = await fetch('/get-formats', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `url=${encodeURIComponent(url)}`
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    document.getElementById('videoTitle').textContent = data.title;
+                    document.getElementById('videoThumbnail').src = data.thumbnail;
+                    document.getElementById('videoDuration').textContent = `Duration: ${formatDuration(data.duration)}`;
+                    
+                    const formatList = document.getElementById('formatList');
+                    formatList.innerHTML = '';
+                    
+                    data.formats.forEach(format => {
+                        const option = document.createElement('div');
+                        option.className = 'format-option';
+                        option.textContent = `${format.height}p ${format.format_note || ''}`;
+                        option.dataset.formatId = format.format_id;
+                        
+                        option.addEventListener('click', () => {
+                            document.querySelectorAll('.format-option').forEach(opt => opt.classList.remove('selected'));
+                            option.classList.add('selected');
+                            selectedFormat = format.format_id;
+                            document.getElementById('downloadBtn').style.display = 'block';
+                        });
+                        
+                        formatList.appendChild(option);
+                    });
+                    
+                    videoInfo.classList.add('active');
+                    document.getElementById('formatOptions').classList.add('active');
+                } else {
+                    throw new Error(data.error || 'Failed to fetch video formats');
+                }
+            } catch (error) {
+                errorMessage.textContent = error.message;
+                errorMessage.style.display = 'block';
+            } finally {
+                loadingIndicator.classList.remove('active');
+                checkBtn.disabled = false;
+            }
+        });
+
+        document.getElementById('downloadBtn').addEventListener('click', async function() {
+            if (!selectedFormat) return;
+            
+            const loadingIndicator = document.getElementById('loadingIndicator');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            loadingIndicator.classList.add('active');
+            downloadBtn.disabled = true;
+            errorMessage.style.display = 'none';
+            
+            try {
+                const response = await fetch('/download', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `url=${encodeURIComponent(currentUrl)}&format_id=${encodeURIComponent(selectedFormat)}`
+                });
+                
+                if (response.ok) {
+                    const blob = await response.blob();
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = '';
+                    document.body.appendChild(a);
+                    a.click();
+                    window.URL.revokeObjectURL(url);
+                    document.body.removeChild(a);
+                } else {
+                    throw new Error('Download failed');
+                }
+            } catch (error) {
+                errorMessage.textContent = 'Download failed. Please try again.';
+                errorMessage.style.display = 'block';
+            } finally {
+                loadingIndicator.classList.remove('active');
+                downloadBtn.disabled = false;
+            }
+        });
+    </script>
 </body>
 </html>
