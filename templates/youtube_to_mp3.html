@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Downloader</title>
+    <title>YouTube to MP3 Converter</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -103,61 +103,6 @@
             margin-left: auto;
             margin-right: auto;
             line-height: 1.7;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .feature-card {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            text-align: center;
-            transition: var(--transition);
-            cursor: pointer;
-            text-decoration: none;
-            color: var(--text-color);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary-color);
-            box-shadow: var(--box-shadow);
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .feature-icon {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: white;
-            margin-bottom: 1rem;
-        }
-
-        .feature-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .feature-description {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            line-height: 1.6;
         }
 
         .url-input-container {
@@ -295,119 +240,43 @@
             margin: 0;
         }
 
-        .format-section {
-            margin-top: 2rem;
-        }
-
-        .format-section-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            color: var(--text-color);
-            margin-bottom: 1rem;
-            padding-bottom: 0.75rem;
-            border-bottom: 2px solid var(--border-color);
-        }
-
-        .format-list {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        .audio-quality {
+            display: flex;
             gap: 1rem;
+            margin-top: 1rem;
         }
 
-        .format-option {
-            padding: 1.25rem;
+        .quality-option {
+            flex: 1;
+            padding: 1rem;
             border: 2px solid var(--border-color);
             border-radius: var(--border-radius);
             cursor: pointer;
             transition: var(--transition);
             background: var(--glass-bg);
-            backdrop-filter: blur(10px);
+            text-align: center;
         }
 
-        .format-option:hover {
+        .quality-option:hover {
             border-color: var(--primary-color);
             transform: translateY(-2px);
             box-shadow: var(--box-shadow);
             background: rgba(255, 255, 255, 0.1);
         }
 
-        .format-option.selected {
+        .quality-option.selected {
             background: rgba(79, 70, 229, 0.1);
             border-color: var(--primary-color);
         }
 
-        .format-option.original {
-            border: 2px solid var(--success-color);
-            background: rgba(34, 197, 94, 0.1);
-        }
-
-        .format-option.original:hover {
-            background: rgba(34, 197, 94, 0.15);
-            border-color: var(--success-color);
-        }
-
-        .format-option.original.selected {
-            background: rgba(34, 197, 94, 0.2);
-            border-color: var(--success-color);
-        }
-
-        .format-header {
+        .quality-title {
             font-weight: 600;
             margin-bottom: 0.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
         }
 
-        .format-details {
-            display: flex;
-            flex-direction: column;
-            gap: 0.5rem;
-        }
-
-        .format-note {
+        .quality-description {
             font-size: 0.875rem;
             color: var(--text-secondary);
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            flex-wrap: wrap;
-        }
-
-        .format-size {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 0.25rem 0.5rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 500;
-            white-space: nowrap;
-        }
-
-        .format-quality-badge {
-            display: inline-block;
-            padding: 0.25rem 0.5rem;
-            border-radius: 9999px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            background: linear-gradient(135deg, #22c55e, #16a34a);
-            color: white;
-            box-shadow: 0 2px 4px rgba(34, 197, 94, 0.2);
-        }
-
-        .format-audio-status {
-            font-size: 0.875rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .format-audio-status.muted {
-            color: var(--error-color);
-        }
-
-        .format-audio-status.has-audio {
-            color: var(--success-color);
         }
 
         .progress-container {
@@ -479,10 +348,6 @@
                 font-size: 2rem;
             }
 
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
             .video-preview {
                 flex-direction: column;
                 align-items: center;
@@ -498,8 +363,8 @@
                 text-align: center;
             }
 
-            .format-list {
-                grid-template-columns: 1fr;
+            .audio-quality {
+                flex-direction: column;
             }
         }
     </style>
@@ -507,35 +372,17 @@
 <body>
     <div class="container">
         <div class="nav-links">
-            <a href="/" class="nav-link active">Home</a>
-            <a href="/youtube-to-mp3" class="nav-link">YouTube to MP3</a>
+            <a href="/" class="nav-link">Home</a>
+            <a href="/youtube-to-mp3" class="nav-link active">YouTube to MP3</a>
             <a href="/youtube-to-video" class="nav-link">YouTube to Video</a>
         </div>
-        <h1>YouTube Downloader</h1>
-        <p class="description">Download your favorite YouTube videos and music in the highest quality. Choose between MP3 audio or video formats.</p>
+        <h1>YouTube to MP3 Converter</h1>
+        <p class="description">Convert your favorite YouTube videos to high-quality MP3 audio files. Perfect for music and podcasts.</p>
         
-        <div class="features-grid">
-            <a href="/youtube-to-mp3" class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-music"></i>
-                </div>
-                <h3 class="feature-title">YouTube to MP3</h3>
-                <p class="feature-description">Convert YouTube videos to high-quality MP3 audio files. Perfect for music and podcasts.</p>
-            </a>
-            
-            <a href="/youtube-to-video" class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-video"></i>
-                </div>
-                <h3 class="feature-title">YouTube to Video</h3>
-                <p class="feature-description">Download YouTube videos in various formats and qualities. With or without audio.</p>
-            </a>
-        </div>
-
         <div class="url-input-container">
             <input type="text" id="url" placeholder="https://www.youtube.com/watch?v=..." required>
             <button class="btn-convert" onclick="getFormats()">
-                <i class="fas fa-search"></i>Get Formats
+                <i class="fas fa-search"></i>Get Audio Formats
             </button>
         </div>
 
@@ -547,16 +394,25 @@
                 </div>
                 <div class="video-details">
                     <h2 class="video-title" id="title"></h2>
+                    <div class="audio-quality">
+                        <div class="quality-option" onclick="selectQuality('best')">
+                            <div class="quality-title">Best Quality</div>
+                            <div class="quality-description">320 kbps</div>
+                        </div>
+                        <div class="quality-option" onclick="selectQuality('good')">
+                            <div class="quality-title">Good Quality</div>
+                            <div class="quality-description">192 kbps</div>
+                        </div>
+                        <div class="quality-option" onclick="selectQuality('normal')">
+                            <div class="quality-title">Normal Quality</div>
+                            <div class="quality-description">128 kbps</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <div class="format-section">
-                <div class="format-section-title">Available Formats</div>
-                <div class="format-list" id="formats"></div>
-            </div>
-
             <button id="downloadBtn" class="btn-convert" style="display: none;">
-                <i class="fas fa-download"></i>Download
+                <i class="fas fa-download"></i>Download MP3
             </button>
         </div>
 
@@ -572,8 +428,15 @@
         </div>
     </div>
 
+    <div id="error" style="display: none;">
+        <div class="alert alert-danger">
+            <h5><i class="fas fa-exclamation-triangle"></i> Error</h5>
+            <p>An error occurred while downloading.</p>
+        </div>
+    </div>
+
     <script>
-        let selectedFormat = null;
+        let selectedQuality = null;
         let videoId = null;
 
         async function getFormats() {
@@ -607,86 +470,65 @@
                 document.getElementById('thumbnail').src = data.thumbnail;
                 document.getElementById('title').textContent = data.title;
                 document.getElementById('duration').textContent = formatDuration(data.duration);
-                
-                const formatsDiv = document.getElementById('formats');
-                formatsDiv.innerHTML = '';
-                
-                data.formats.forEach(format => {
-                    const formatDiv = document.createElement('div');
-                    formatDiv.className = `format-option ${format.is_original ? 'original' : ''}`;
-                    formatDiv.innerHTML = `
-                        <div class="format-header">
-                            ${format.format_note} - ${format.height}p
-                            ${format.is_original ? '<span class="format-quality-badge">Original</span>' : ''}
-                        </div>
-                        <div class="format-details">
-                            <div class="format-note">
-                                <i class="fas fa-file-video"></i> ${format.ext.toUpperCase()}
-                                <span class="format-size">${format.filesize ? (format.filesize / (1024 * 1024)).toFixed(2) + ' MB' : 'N/A'}</span>
-                            </div>
-                            <div class="format-audio-status ${format.has_audio ? 'has-audio' : 'muted'}">
-                                <i class="fas ${format.has_audio ? 'fa-volume-up' : 'fa-volume-mute'}"></i>
-                                ${format.has_audio ? 'With Audio' : 'No Audio (Will merge with best audio)'}
-                            </div>
-                        </div>
-                    `;
-                    formatDiv.onclick = () => selectFormat(format.format_id);
-                    formatsDiv.appendChild(formatDiv);
-                });
-
                 document.getElementById('videoInfo').classList.add('active');
                 startProgressCheck();
             } catch (error) {
-                alert('Error getting video formats: ' + error.message);
+                alert('Error getting video info: ' + error.message);
             }
         }
 
-        function selectFormat(formatId) {
-            selectedFormat = formatId;
-            document.querySelectorAll('.format-option').forEach(opt => {
+        function selectQuality(quality) {
+            selectedQuality = quality;
+            document.querySelectorAll('.quality-option').forEach(opt => {
                 opt.classList.remove('selected');
             });
             event.currentTarget.classList.add('selected');
             document.getElementById('downloadBtn').style.display = 'block';
         }
 
-        async function downloadVideo() {
-            if (!selectedFormat) {
-                alert('Please select a format');
+        async function downloadMP3() {
+            const url = document.getElementById('url').value;
+            const quality = document.querySelector('.quality-option.selected')?.getAttribute('onclick')?.match(/'([^']+)'/)?.[1];
+            
+            if (!url) {
+                showError('Please enter a YouTube URL');
                 return;
             }
-
-            const url = document.getElementById('url').value;
-            const downloadBtn = document.getElementById('downloadBtn');
-            downloadBtn.disabled = true;
-
+            
+            if (!quality) {
+                showError('Please select an audio quality');
+                return;
+            }
+            
             try {
+                showProgress();
                 const response = await fetch('/download', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/x-www-form-urlencoded',
                     },
-                    body: `url=${encodeURIComponent(url)}&format_id=${selectedFormat}&merge_audio=true`
+                    body: `url=${encodeURIComponent(url)}&format=mp3&quality=${quality}`
                 });
-
+                
+                const data = await response.json();
+                
                 if (response.ok) {
-                    const blob = await response.blob();
-                    const downloadUrl = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = downloadUrl;
-                    a.download = document.getElementById('title').textContent + '.mp4';
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(downloadUrl);
-                    document.body.removeChild(a);
+                    // Create a download link
+                    const link = document.createElement('a');
+                    link.href = window.URL.createObjectURL(await response.blob());
+                    link.download = data.filename || 'audio.mp3';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    window.URL.revokeObjectURL(link.href);
                 } else {
-                    const error = await response.json();
-                    alert('Error downloading: ' + error.error);
+                    showError(data.error || 'Failed to download MP3');
                 }
             } catch (error) {
-                alert('Error downloading: ' + error.message);
+                showError('An error occurred while downloading');
+                console.error('Download error:', error);
             } finally {
-                downloadBtn.disabled = false;
+                hideProgress();
             }
         }
 
@@ -729,7 +571,18 @@
             }
         }
 
-        document.getElementById('downloadBtn').onclick = downloadVideo;
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.innerHTML = `
+                <div class="alert alert-danger">
+                    <h5><i class="fas fa-exclamation-triangle"></i> Error</h5>
+                    <p>${message}</p>
+                </div>
+            `;
+            errorDiv.style.display = 'block';
+        }
+
+        document.getElementById('downloadBtn').onclick = downloadMP3;
     </script>
 </body>
-</html>
+</html> 

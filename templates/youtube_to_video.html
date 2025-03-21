@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>YouTube Downloader</title>
+    <title>YouTube to Video Converter</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -103,61 +103,6 @@
             margin-left: auto;
             margin-right: auto;
             line-height: 1.7;
-        }
-
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 2rem;
-            margin-bottom: 3rem;
-        }
-
-        .feature-card {
-            background: var(--glass-bg);
-            border: 1px solid var(--glass-border);
-            border-radius: var(--border-radius);
-            padding: 2rem;
-            text-align: center;
-            transition: var(--transition);
-            cursor: pointer;
-            text-decoration: none;
-            color: var(--text-color);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .feature-card:hover {
-            transform: translateY(-5px);
-            border-color: var(--primary-color);
-            box-shadow: var(--box-shadow);
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .feature-icon {
-            width: 64px;
-            height: 64px;
-            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            color: white;
-            margin-bottom: 1rem;
-        }
-
-        .feature-title {
-            font-size: 1.25rem;
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .feature-description {
-            color: var(--text-secondary);
-            font-size: 0.9rem;
-            line-height: 1.6;
         }
 
         .url-input-container {
@@ -479,10 +424,6 @@
                 font-size: 2rem;
             }
 
-            .features-grid {
-                grid-template-columns: 1fr;
-            }
-
             .video-preview {
                 flex-direction: column;
                 align-items: center;
@@ -507,31 +448,13 @@
 <body>
     <div class="container">
         <div class="nav-links">
-            <a href="/" class="nav-link active">Home</a>
+            <a href="/" class="nav-link">Home</a>
             <a href="/youtube-to-mp3" class="nav-link">YouTube to MP3</a>
-            <a href="/youtube-to-video" class="nav-link">YouTube to Video</a>
+            <a href="/youtube-to-video" class="nav-link active">YouTube to Video</a>
         </div>
-        <h1>YouTube Downloader</h1>
-        <p class="description">Download your favorite YouTube videos and music in the highest quality. Choose between MP3 audio or video formats.</p>
+        <h1>YouTube to Video Converter</h1>
+        <p class="description">Download YouTube videos in your preferred quality with or without audio.</p>
         
-        <div class="features-grid">
-            <a href="/youtube-to-mp3" class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-music"></i>
-                </div>
-                <h3 class="feature-title">YouTube to MP3</h3>
-                <p class="feature-description">Convert YouTube videos to high-quality MP3 audio files. Perfect for music and podcasts.</p>
-            </a>
-            
-            <a href="/youtube-to-video" class="feature-card">
-                <div class="feature-icon">
-                    <i class="fas fa-video"></i>
-                </div>
-                <h3 class="feature-title">YouTube to Video</h3>
-                <p class="feature-description">Download YouTube videos in various formats and qualities. With or without audio.</p>
-            </a>
-        </div>
-
         <div class="url-input-container">
             <input type="text" id="url" placeholder="https://www.youtube.com/watch?v=..." required>
             <button class="btn-convert" onclick="getFormats()">
@@ -551,12 +474,12 @@
             </div>
 
             <div class="format-section">
-                <div class="format-section-title">Available Formats</div>
-                <div class="format-list" id="formats"></div>
+                <div class="format-section-title">Available Video Formats</div>
+                <div class="format-list" id="videoFormats"></div>
             </div>
 
             <button id="downloadBtn" class="btn-convert" style="display: none;">
-                <i class="fas fa-download"></i>Download
+                <i class="fas fa-download"></i>Download Video
             </button>
         </div>
 
@@ -608,8 +531,8 @@
                 document.getElementById('title').textContent = data.title;
                 document.getElementById('duration').textContent = formatDuration(data.duration);
                 
-                const formatsDiv = document.getElementById('formats');
-                formatsDiv.innerHTML = '';
+                const videoFormatsDiv = document.getElementById('videoFormats');
+                videoFormatsDiv.innerHTML = '';
                 
                 data.formats.forEach(format => {
                     const formatDiv = document.createElement('div');
@@ -631,7 +554,7 @@
                         </div>
                     `;
                     formatDiv.onclick = () => selectFormat(format.format_id);
-                    formatsDiv.appendChild(formatDiv);
+                    videoFormatsDiv.appendChild(formatDiv);
                 });
 
                 document.getElementById('videoInfo').classList.add('active');
@@ -652,7 +575,7 @@
 
         async function downloadVideo() {
             if (!selectedFormat) {
-                alert('Please select a format');
+                alert('Please select a video format');
                 return;
             }
 
@@ -732,4 +655,4 @@
         document.getElementById('downloadBtn').onclick = downloadVideo;
     </script>
 </body>
-</html>
+</html> 
