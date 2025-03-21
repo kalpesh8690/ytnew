@@ -18,20 +18,45 @@ def get_video_info(url):
         try:
             info = ydl.extract_info(url, download=False)
             formats = []
+            audio_formats = []
+            
+            # Get original video height
+            original_height = info.get('height', 0)
+            
             for f in info.get('formats', []):
+                format_info = {
+                    'format_id': f.get('format_id'),
+                    'ext': f.get('ext'),
+                    'filesize': f.get('filesize'),
+                    'format_note': f.get('format_note', '')
+                }
+                
+                # Video formats
                 if f.get('height') and f.get('ext') == 'mp4':
-                    formats.append({
-                        'format_id': f.get('format_id'),
-                        'height': f.get('height'),
-                        'ext': f.get('ext'),
-                        'filesize': f.get('filesize'),
-                        'format_note': f.get('format_note', '')
-                    })
+                    format_info['height'] = f.get('height')
+                    # Check if video has audio
+                    format_info['has_audio'] = f.get('acodec') != 'none'
+                    # Mark if it's original quality
+                    format_info['is_original'] = f.get('height') == original_height
+                    formats.append(format_info)
+                
+                # Audio formats
+                elif f.get('acodec') != 'none' and f.get('vcodec') == 'none':
+                    format_info['abr'] = f.get('abr', 0)  # Default to 0 if None
+                    audio_formats.append(format_info)
+            
+            # Sort video formats by original quality first, then height
+            formats.sort(key=lambda x: (-x['is_original'], -x['height']))
+            
+            # Sort audio formats by bitrate (descending), handling None values
+            audio_formats.sort(key=lambda x: x['abr'] if x['abr'] is not None else 0, reverse=True)
+            
             return {
                 'title': info.get('title'),
                 'thumbnail': info.get('thumbnail'),
                 'duration': info.get('duration'),
-                'formats': sorted(formats, key=lambda x: x['height'], reverse=True)
+                'formats': formats,
+                'audio_formats': audio_formats
             }
         except Exception as e:
             return {'error': str(e)}
@@ -52,6 +77,25 @@ def download_video(url, format_id):
         file_path = ydl.prepare_filename(info).replace(".webm", ".mp4").replace(".mkv", ".mp4")
     
     return file_path
+
+def get_direct_url(url, format_id):
+    ydl_opts = {
+        "quiet": True,
+        "no_warnings": True,
+        "extract_flat": True,
+        "format": format_id,
+    }
+    
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        try:
+            info = ydl.extract_info(url, download=False)
+            return {
+                'url': info.get('url'),
+                'title': info.get('title'),
+                'ext': info.get('ext')
+            }
+        except Exception as e:
+            return {'error': str(e)}
 
 @app.route("/", methods=["GET"])
 def index():
@@ -75,13 +119,28 @@ def download():
     format_id = request.form.get("format_id")
     
     if not url or not format_id:
-        return "Error: Missing URL or format", 400
+        return jsonify({"error": "Missing URL or format"}), 400
     
     try:
         file_path = download_video(url, format_id)
-        return send_file(file_path, as_attachment=True)
+        return send_file(
+            file_path,
+            as_attachment=True,
+            download_name=os.path.basename(file_path)
+        )
     except Exception as e:
-        return f"Error: {e}", 400
+        return jsonify({"error": str(e)}), 400
+
+@app.route("/download-file/<filename>")
+def download_file(filename):
+    try:
+        return send_file(
+            os.path.join(DOWNLOAD_FOLDER, filename),
+            as_attachment=True,
+            download_name=filename
+        )
+    except Exception as e:
+        return jsonify({"error": str(e)}), 404
 
 if __name__ == "__main__":
     app.run(debug=True, host="0.0.0.0", port=5000)

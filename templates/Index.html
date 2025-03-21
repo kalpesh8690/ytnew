@@ -183,21 +183,86 @@
 
         .format-option {
             padding: 0.75rem;
-            border: 2px solid #ddd;
-            border-radius: var(--border-radius);
+            border: 1px solid #ddd;
+            border-radius: 0.5rem;
             cursor: pointer;
-            transition: all 0.3s ease;
-            text-align: center;
+            transition: all 0.2s ease;
+            margin-bottom: 0.5rem;
+            background-color: white;
         }
 
         .format-option:hover {
-            border-color: var(--primary-color);
-            background-color: #fff5f5;
+            background-color: #f8f9fa;
+            border-color: #ff4d4d;
         }
 
         .format-option.selected {
-            border-color: var(--primary-color);
             background-color: #fff5f5;
+            border-color: #ff4d4d;
+        }
+
+        .format-option.audio {
+            background-color: #f8f9fa;
+        }
+
+        .format-option.audio:hover {
+            background-color: #fff5f5;
+        }
+
+        .format-option.audio.selected {
+            background-color: #fff5f5;
+        }
+
+        .format-note {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+        .format-audio-status {
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .format-audio-status.muted {
+            color: #ff4d4d;
+        }
+
+        .format-audio-status.has-audio {
+            color: #28a745;
+        }
+
+        .format-audio-status i {
+            font-size: 1rem;
+        }
+
+        .format-option.original {
+            border: 2px solid #28a745;
+            background-color: #f8fff8;
+        }
+
+        .format-option.original:hover {
+            background-color: #e8f5e8;
+            border-color: #28a745;
+        }
+
+        .format-option.original.selected {
+            background-color: #e8f5e8;
+            border-color: #28a745;
+        }
+
+        .format-quality-badge {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            margin-left: 6px;
+            background-color: #28a745;
+            color: white;
         }
 
         @media (max-width: 768px) {
@@ -227,6 +292,162 @@
                 grid-template-columns: 1fr;
             }
         }
+
+        .url-input-container {
+            position: relative;
+            width: 100%;
+        }
+
+        .url-input-container input {
+            padding-right: 40px;
+        }
+
+        .url-loader {
+            display: none;
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        .url-loader.active {
+            display: block;
+        }
+
+        .url-status {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 20px;
+            height: 20px;
+            display: none;
+            font-size: 18px;
+        }
+
+        .url-status.valid {
+            display: block;
+            color: #28a745;
+        }
+
+        .url-status.invalid {
+            display: block;
+            color: #dc3545;
+        }
+
+        .thumbnail-preview {
+            display: none;
+            margin-top: 1rem;
+            text-align: center;
+        }
+
+        .thumbnail-preview.active {
+            display: block;
+        }
+
+        .thumbnail-preview img {
+            max-width: 320px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+        }
+
+        .thumbnail-preview .video-title {
+            margin-top: 0.5rem;
+            font-size: 1rem;
+            color: #666;
+        }
+
+        .progress-container {
+            display: none;
+            margin-top: 1rem;
+            padding: 1rem;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            text-align: center;
+        }
+
+        .progress-container.active {
+            display: block;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background-color: #e9ecef;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 0.5rem 0;
+        }
+
+        .progress-fill {
+            width: 0%;
+            height: 100%;
+            background-color: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .progress-text {
+            font-size: 0.9rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-percentage {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .progress-status {
+            font-size: 0.8rem;
+            color: #666;
+            margin-top: 0.5rem;
+        }
+
+        .spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #f3f3f3;
+            border-top: 2px solid var(--primary-color);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .format-section {
+            margin-top: 1.5rem;
+        }
+
+        .format-section-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 0.75rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #eee;
+        }
+
+        .download-options {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .download-options button {
+            flex: 1;
+        }
     </style>
 </head>
 <body>
@@ -236,13 +457,21 @@
         
         <form method="POST" class="download-form" id="downloadForm">
             <div class="input-group">
-                <input type="text" 
-                       name="url" 
-                       id="videoUrl"
-                       placeholder="https://www.youtube.com/watch?v=..." 
-                       required
-                       pattern="^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+"
-                       title="Please enter a valid YouTube URL">
+                <div class="url-input-container">
+                    <input type="text" 
+                           name="url" 
+                           id="videoUrl"
+                           placeholder="https://www.youtube.com/watch?v=..." 
+                           required
+                           pattern="^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+"
+                           title="Please enter a valid YouTube URL">
+                    <div class="url-loader" id="urlLoader"></div>
+                    <span class="url-status" id="urlStatus"></span>
+                </div>
+            </div>
+            <div class="thumbnail-preview" id="thumbnailPreview">
+                <img id="previewThumbnail" src="" alt="Video thumbnail">
+                <div class="video-title" id="previewTitle"></div>
             </div>
             <button type="submit" id="checkBtn">Check Available Formats</button>
         </form>
@@ -256,8 +485,18 @@
                 </div>
             </div>
             <div class="format-options" id="formatOptions">
-                <div class="format-list" id="formatList"></div>
-                <button type="button" id="downloadBtn" style="display: none; margin-top: 1rem;">Download Selected Quality</button>
+                <div class="format-section">
+                    <div class="format-section-title">Video Formats</div>
+                    <div class="format-list" id="formatList"></div>
+                </div>
+                <div class="format-section">
+                    <div class="format-section-title">Audio Formats</div>
+                    <div class="format-list" id="audioFormatList"></div>
+                </div>
+                <div class="download-options">
+                    <button type="button" id="downloadVideoBtn" style="display: none;">Download Video</button>
+                    <button type="button" id="downloadAudioBtn" style="display: none;">Download Audio</button>
+                </div>
             </div>
         </div>
 
@@ -266,11 +505,26 @@
         </div>
 
         <div class="error" id="errorMessage"></div>
+
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-text">
+                Downloading: <span class="progress-percentage" id="progressPercentage">0%</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-status" id="progressStatus">
+                <span class="spinner"></span>
+                Preparing download...
+            </div>
+        </div>
     </div>
 
     <script>
         let currentUrl = '';
-        let selectedFormat = null;
+        let selectedVideoFormat = null;
+        let selectedAudioFormat = null;
+        let debounceTimer = null;
 
         function formatDuration(seconds) {
             const hours = Math.floor(seconds / 3600);
@@ -282,6 +536,82 @@
             }
             return `${minutes}:${remainingSeconds.toString().padStart(2, '0')}`;
         }
+
+        function validateYouTubeUrl(url) {
+            const pattern = /^(https?:\/\/)?(www\.)?(youtube\.com|youtu\.be)\/.+$/;
+            return pattern.test(url);
+        }
+
+        async function fetchVideoInfo(url) {
+            try {
+                const response = await fetch('/get-formats', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `url=${encodeURIComponent(url)}`
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Failed to fetch video info');
+                }
+                
+                const data = await response.json();
+                return data;
+            } catch (error) {
+                console.error('Error fetching video info:', error);
+                return null;
+            }
+        }
+
+        document.getElementById('videoUrl').addEventListener('input', async function(e) {
+            const url = e.target.value;
+            const urlStatus = document.getElementById('urlStatus');
+            const urlLoader = document.getElementById('urlLoader');
+            const thumbnailPreview = document.getElementById('thumbnailPreview');
+            const previewThumbnail = document.getElementById('previewThumbnail');
+            const previewTitle = document.getElementById('previewTitle');
+            
+            // Clear previous timer
+            if (debounceTimer) {
+                clearTimeout(debounceTimer);
+            }
+            
+            // Hide status and thumbnail preview initially
+            urlStatus.style.display = 'none';
+            thumbnailPreview.classList.remove('active');
+            
+            // Validate URL format
+            if (validateYouTubeUrl(url)) {
+                // Show loader
+                urlLoader.classList.add('active');
+                
+                // Debounce the API call
+                debounceTimer = setTimeout(async () => {
+                    const data = await fetchVideoInfo(url);
+                    // Hide loader
+                    urlLoader.classList.remove('active');
+                    
+                    if (data && !data.error) {
+                        urlStatus.innerHTML = '✓';
+                        urlStatus.className = 'url-status valid';
+                        urlStatus.style.display = 'block';
+                        
+                        previewThumbnail.src = data.thumbnail;
+                        previewTitle.textContent = data.title;
+                        thumbnailPreview.classList.add('active');
+                    } else {
+                        urlStatus.innerHTML = '✕';
+                        urlStatus.className = 'url-status invalid';
+                        urlStatus.style.display = 'block';
+                    }
+                }, 500); // Wait 500ms after user stops typing
+            } else {
+                urlStatus.innerHTML = '✕';
+                urlStatus.className = 'url-status invalid';
+                urlStatus.style.display = 'block';
+            }
+        });
 
         document.getElementById('downloadForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -313,24 +643,60 @@
                     document.getElementById('videoThumbnail').src = data.thumbnail;
                     document.getElementById('videoDuration').textContent = `Duration: ${formatDuration(data.duration)}`;
                     
+                    // Video formats
                     const formatList = document.getElementById('formatList');
                     formatList.innerHTML = '';
                     
                     data.formats.forEach(format => {
                         const option = document.createElement('div');
-                        option.className = 'format-option';
-                        option.textContent = `${format.height}p ${format.format_note || ''}`;
+                        option.className = `format-option ${format.is_original ? 'original' : ''}`;
+                        option.innerHTML = `
+                            ${format.height}p ${format.format_note || ''}
+                            ${format.is_original ? '<span class="format-quality-badge">Original</span>' : ''}
+                            <div class="format-note">${format.ext.toUpperCase()}</div>
+                            <div class="format-audio-status ${format.has_audio ? 'has-audio' : 'muted'}">
+                                <i class="fas ${format.has_audio ? 'fa-volume-up' : 'fa-volume-mute'}"></i>
+                                ${format.has_audio ? 'With Audio' : 'No Audio'}
+                            </div>
+                        `;
                         option.dataset.formatId = format.format_id;
                         
                         option.addEventListener('click', () => {
-                            document.querySelectorAll('.format-option').forEach(opt => opt.classList.remove('selected'));
+                            document.querySelectorAll('.format-option:not(.audio)').forEach(opt => opt.classList.remove('selected'));
                             option.classList.add('selected');
-                            selectedFormat = format.format_id;
-                            document.getElementById('downloadBtn').style.display = 'block';
+                            selectedVideoFormat = format.format_id;
+                            document.getElementById('downloadVideoBtn').style.display = 'block';
                         });
                         
                         formatList.appendChild(option);
                     });
+
+                    // Audio formats
+                    const audioFormatList = document.getElementById('audioFormatList');
+                    audioFormatList.innerHTML = '';
+                    
+                    if (data.audio_formats && data.audio_formats.length > 0) {
+                        data.audio_formats.forEach(format => {
+                            const option = document.createElement('div');
+                            option.className = 'format-option audio';
+                            option.innerHTML = `
+                                Audio ${format.abr ? format.abr + 'kbps' : 'Best'}
+                                <div class="format-note">${format.ext.toUpperCase()}</div>
+                            `;
+                            option.dataset.formatId = format.format_id;
+                            
+                            option.addEventListener('click', () => {
+                                document.querySelectorAll('.format-option.audio').forEach(opt => opt.classList.remove('selected'));
+                                option.classList.add('selected');
+                                selectedAudioFormat = format.format_id;
+                                document.getElementById('downloadAudioBtn').style.display = 'block';
+                            });
+                            
+                            audioFormatList.appendChild(option);
+                        });
+                    } else {
+                        audioFormatList.innerHTML = '<div class="format-note">No audio-only formats available</div>';
+                    }
                     
                     videoInfo.classList.add('active');
                     document.getElementById('formatOptions').classList.add('active');
@@ -346,47 +712,91 @@
             }
         });
 
-        document.getElementById('downloadBtn').addEventListener('click', async function() {
-            if (!selectedFormat) return;
+        function updateProgress(percentage, status) {
+            const progressContainer = document.getElementById('progressContainer');
+            const progressFill = document.getElementById('progressFill');
+            const progressPercentage = document.getElementById('progressPercentage');
+            const progressStatus = document.getElementById('progressStatus');
             
+            progressContainer.classList.add('active');
+            progressFill.style.width = `${percentage}%`;
+            progressPercentage.textContent = `${percentage}%`;
+            
+            // Only show spinner for non-downloading states
+            if (status !== 'Downloading...') {
+                progressStatus.innerHTML = `<span class="spinner"></span>${status}`;
+            } else {
+                progressStatus.innerHTML = status;
+            }
+        }
+
+        // Video download handler
+        document.getElementById('downloadVideoBtn').addEventListener('click', async function() {
+            if (!selectedVideoFormat) return;
+            await startDownload(selectedVideoFormat);
+        });
+
+        // Audio download handler
+        document.getElementById('downloadAudioBtn').addEventListener('click', async function() {
+            if (!selectedAudioFormat) return;
+            await startDownload(selectedAudioFormat);
+        });
+
+        async function startDownload(formatId) {
             const loadingIndicator = document.getElementById('loadingIndicator');
-            const downloadBtn = document.getElementById('downloadBtn');
+            const downloadVideoBtn = document.getElementById('downloadVideoBtn');
+            const downloadAudioBtn = document.getElementById('downloadAudioBtn');
             const errorMessage = document.getElementById('errorMessage');
+            const progressContainer = document.getElementById('progressContainer');
             
             loadingIndicator.classList.add('active');
-            downloadBtn.disabled = true;
+            downloadVideoBtn.disabled = true;
+            downloadAudioBtn.disabled = true;
             errorMessage.style.display = 'none';
+            progressContainer.classList.add('active');
             
             try {
-                const response = await fetch('/download', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: `url=${encodeURIComponent(currentUrl)}&format_id=${encodeURIComponent(selectedFormat)}`
-                });
-                
-                if (response.ok) {
-                    const blob = await response.blob();
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = '';
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    document.body.removeChild(a);
-                } else {
-                    throw new Error('Download failed');
-                }
+                updateProgress(0, 'Starting download...');
+
+                // Create a form to submit the download request
+                const form = document.createElement('form');
+                form.method = 'POST';
+                form.action = '/download';
+                form.style.display = 'none';
+
+                // Add URL input
+                const urlInput = document.createElement('input');
+                urlInput.type = 'hidden';
+                urlInput.name = 'url';
+                urlInput.value = currentUrl;
+                form.appendChild(urlInput);
+
+                // Add format_id input
+                const formatInput = document.createElement('input');
+                formatInput.type = 'hidden';
+                formatInput.name = 'format_id';
+                formatInput.value = formatId;
+                form.appendChild(formatInput);
+
+                // Add form to document and submit
+                document.body.appendChild(form);
+                form.submit();
+                document.body.removeChild(form);
+
+                // Show progress message
+                updateProgress(50, 'Downloading...');
+
             } catch (error) {
                 errorMessage.textContent = 'Download failed. Please try again.';
                 errorMessage.style.display = 'block';
+                progressContainer.classList.remove('active');
+                updateProgress(0, '');
             } finally {
                 loadingIndicator.classList.remove('active');
-                downloadBtn.disabled = false;
+                downloadVideoBtn.disabled = false;
+                downloadAudioBtn.disabled = false;
             }
-        });
+        }
     </script>
 </body>
 </html>
