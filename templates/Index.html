@@ -4,14 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>YouTube Video Downloader</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         :root {
-            --primary-color: #ff0000;
-            --primary-hover: #cc0000;
-            --bg-color: #f9f9f9;
-            --text-color: #333;
-            --border-radius: 8px;
-            --box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            --primary-color: #4f46e5;
+            --primary-hover: #4338ca;
+            --bg-color: #0f172a;
+            --card-bg: rgba(255, 255, 255, 0.05);
+            --text-color: #f8fafc;
+            --text-secondary: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.1);
+            --border-radius: 16px;
+            --box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --glass-bg: rgba(255, 255, 255, 0.05);
+            --glass-border: rgba(255, 255, 255, 0.1);
+            --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
         }
 
         * {
@@ -21,8 +30,8 @@
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background-color: var(--bg-color);
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
             color: var(--text-color);
             line-height: 1.6;
             min-height: 100vh;
@@ -33,32 +42,45 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             width: 100%;
-            background: white;
-            padding: 2rem;
+            background: var(--glass-bg);
+            padding: 2.5rem;
             border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
+            box-shadow: var(--glass-shadow);
+            backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            transition: var(--transition);
         }
 
         h1 {
-            color: var(--primary-color);
-            margin-bottom: 1.5rem;
-            font-size: 2rem;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            font-size: 2.5rem;
             text-align: center;
+            font-weight: 700;
+            background: linear-gradient(135deg, #4f46e5, #818cf8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
 
         .description {
-            margin-bottom: 2rem;
-            color: #666;
+            margin-bottom: 2.5rem;
+            color: var(--text-secondary);
             text-align: center;
+            font-size: 1.1rem;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+            line-height: 1.7;
         }
 
         .download-form {
             display: flex;
             flex-direction: column;
-            gap: 1rem;
-            margin-bottom: 2rem;
+            gap: 1.25rem;
+            margin-bottom: 2.5rem;
         }
 
         .input-group {
@@ -67,44 +89,83 @@
 
         input[type="text"] {
             width: 100%;
-            padding: 1rem;
-            border: 2px solid #ddd;
+            padding: 1.25rem;
+            border: 2px solid var(--border-color);
             border-radius: var(--border-radius);
             font-size: 1rem;
-            transition: border-color 0.3s ease;
+            transition: var(--transition);
+            background: var(--glass-bg);
+            color: var(--text-color);
+            backdrop-filter: blur(10px);
+        }
+
+        input[type="text"]::placeholder {
+            color: var(--text-secondary);
         }
 
         input[type="text"]:focus {
             outline: none;
             border-color: var(--primary-color);
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
         }
 
         button {
-            background-color: var(--primary-color);
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
             color: white;
             border: none;
-            padding: 1rem;
+            padding: 1.25rem;
             border-radius: var(--border-radius);
             font-size: 1rem;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
             font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg,
+                transparent,
+                rgba(255, 255, 255, 0.2),
+                transparent
+            );
+            transition: 0.5s;
+        }
+
+        button:hover::before {
+            left: 100%;
         }
 
         button:hover {
-            background-color: var(--primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
         }
 
         button:disabled {
-            background-color: #ccc;
+            background: var(--text-secondary);
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
         .loading {
             display: none;
-            margin-top: 1rem;
-            color: #666;
+            margin-top: 1.5rem;
+            color: var(--text-secondary);
             text-align: center;
+            font-size: 1.1rem;
         }
 
         .loading.active {
@@ -112,185 +173,248 @@
         }
 
         .error {
-            color: #dc3545;
-            margin-top: 1rem;
+            color: #ef4444;
+            margin-top: 1.5rem;
             display: none;
-            padding: 0.75rem;
-            background-color: #ffe6e6;
+            padding: 1rem;
+            background: rgba(239, 68, 68, 0.1);
             border-radius: var(--border-radius);
             text-align: center;
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            backdrop-filter: blur(10px);
         }
 
         .video-info {
             display: none;
-            margin-top: 2rem;
-            padding: 1rem;
-            background-color: #f8f9fa;
+            margin-top: 2.5rem;
+            padding: 1.5rem;
+            background: var(--glass-bg);
             border-radius: var(--border-radius);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
         }
 
         .video-info.active {
             display: block;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { 
+                opacity: 0; 
+                transform: translateY(20px);
+            }
+            to { 
+                opacity: 1; 
+                transform: translateY(0);
+            }
         }
 
         .video-preview {
             display: flex;
-            gap: 1.5rem;
-            margin-bottom: 1.5rem;
+            gap: 2rem;
+            margin-bottom: 2rem;
             align-items: flex-start;
+            background: var(--glass-bg);
+            padding: 1.5rem;
+            border-radius: var(--border-radius);
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
         }
 
         .thumbnail {
-            width: 320px;
-            height: 180px;
+            width: 360px;
+            height: 202px;
             border-radius: var(--border-radius);
             object-fit: cover;
             box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            border: 1px solid var(--border-color);
+            background: rgba(0, 0, 0, 0.2);
+        }
+
+        .thumbnail:hover {
+            transform: scale(1.02) translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0, 0, 0, 0.2);
         }
 
         .video-details {
             flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
         }
 
         .video-title {
-            font-size: 1.25rem;
+            font-size: 1.5rem;
             font-weight: 600;
-            margin-bottom: 0.5rem;
             color: var(--text-color);
+            line-height: 1.4;
+            margin: 0;
         }
 
         .video-duration {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 1rem;
+            color: var(--text-secondary);
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .video-duration i {
+            color: var(--primary-color);
         }
 
         .format-options {
             display: none;
-            margin-top: 1rem;
+            margin-top: 1.5rem;
         }
 
         .format-options.active {
             display: block;
         }
 
+        .format-section {
+            margin-top: 2rem;
+        }
+
+        .format-section-title {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: var(--text-color);
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid var(--border-color);
+        }
+
         .format-list {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-            gap: 0.5rem;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
             margin-top: 1rem;
         }
 
-        .format-option {
-            padding: 0.75rem;
-            border: 1px solid #ddd;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            transition: all 0.2s ease;
+        .format-header {
+            font-weight: 600;
             margin-bottom: 0.5rem;
-            background-color: white;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
         }
 
-        .format-option:hover {
-            background-color: #f8f9fa;
-            border-color: #ff4d4d;
-        }
-
-        .format-option.selected {
-            background-color: #fff5f5;
-            border-color: #ff4d4d;
-        }
-
-        .format-option.audio {
-            background-color: #f8f9fa;
-        }
-
-        .format-option.audio:hover {
-            background-color: #fff5f5;
-        }
-
-        .format-option.audio.selected {
-            background-color: #fff5f5;
+        .format-details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
         }
 
         .format-note {
-            font-size: 0.8rem;
-            color: #666;
-            margin-top: 0.25rem;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            flex-wrap: wrap;
+        }
+
+        .format-size {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            white-space: nowrap;
+        }
+
+        .format-codec {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            background: rgba(255, 255, 255, 0.05);
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            display: inline-block;
+        }
+
+        .format-option {
+            padding: 1.25rem;
+            border: 2px solid var(--border-color);
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--glass-bg);
+            backdrop-filter: blur(10px);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .format-option:hover {
+            border-color: var(--primary-color);
+            transform: translateY(-2px);
+            box-shadow: var(--box-shadow);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .format-option.selected {
+            background: rgba(79, 70, 229, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .format-option.audio {
+            background: var(--glass-bg);
+        }
+
+        .format-option.audio:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .format-option.audio.selected {
+            background: rgba(79, 70, 229, 0.1);
+        }
+
+        .format-option.original {
+            border: 2px solid #22c55e;
+            background: rgba(34, 197, 94, 0.1);
+        }
+
+        .format-option.original:hover {
+            background: rgba(34, 197, 94, 0.15);
+            border-color: #22c55e;
+        }
+
+        .format-option.original.selected {
+            background: rgba(34, 197, 94, 0.2);
+            border-color: #22c55e;
+        }
+
+        .format-quality-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 9999px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            background: linear-gradient(135deg, #22c55e, #16a34a);
+            color: white;
+            box-shadow: 0 2px 4px rgba(34, 197, 94, 0.2);
         }
 
         .format-audio-status {
-            font-size: 0.8rem;
-            margin-top: 0.25rem;
+            font-size: 0.875rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
         }
 
         .format-audio-status.muted {
-            color: #ff4d4d;
+            color: #ef4444;
         }
 
         .format-audio-status.has-audio {
-            color: #28a745;
+            color: #22c55e;
         }
 
         .format-audio-status i {
             font-size: 1rem;
-        }
-
-        .format-option.original {
-            border: 2px solid #28a745;
-            background-color: #f8fff8;
-        }
-
-        .format-option.original:hover {
-            background-color: #e8f5e8;
-            border-color: #28a745;
-        }
-
-        .format-option.original.selected {
-            background-color: #e8f5e8;
-            border-color: #28a745;
-        }
-
-        .format-quality-badge {
-            display: inline-block;
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            margin-left: 6px;
-            background-color: #28a745;
-            color: white;
-        }
-
-        @media (max-width: 768px) {
-            .container {
-                padding: 1rem;
-            }
-
-            h1 {
-                font-size: 1.5rem;
-            }
-
-            .video-preview {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .thumbnail {
-                width: 100%;
-                max-width: 320px;
-            }
-
-            .video-details {
-                text-align: center;
-            }
-
-            .format-list {
-                grid-template-columns: 1fr;
-            }
         }
 
         .url-input-container {
@@ -299,18 +423,18 @@
         }
 
         .url-input-container input {
-            padding-right: 40px;
+            padding-right: 3rem;
         }
 
         .url-loader {
             display: none;
             position: absolute;
-            right: 10px;
+            right: 1rem;
             top: 50%;
             transform: translateY(-50%);
-            width: 20px;
-            height: 20px;
-            border: 2px solid #f3f3f3;
+            width: 1.5rem;
+            height: 1.5rem;
+            border: 2px solid var(--border-color);
             border-top: 2px solid var(--primary-color);
             border-radius: 50%;
             animation: spin 1s linear infinite;
@@ -322,103 +446,78 @@
 
         .url-status {
             position: absolute;
-            right: 10px;
+            right: 1rem;
             top: 50%;
             transform: translateY(-50%);
-            width: 20px;
-            height: 20px;
+            width: 1.5rem;
+            height: 1.5rem;
             display: none;
-            font-size: 18px;
+            font-size: 1.25rem;
         }
 
         .url-status.valid {
             display: block;
-            color: #28a745;
+            color: #22c55e;
         }
 
         .url-status.invalid {
             display: block;
-            color: #dc3545;
-        }
-
-        .thumbnail-preview {
-            display: none;
-            margin-top: 1rem;
-            text-align: center;
-        }
-
-        .thumbnail-preview.active {
-            display: block;
-        }
-
-        .thumbnail-preview img {
-            max-width: 320px;
-            border-radius: var(--border-radius);
-            box-shadow: var(--box-shadow);
-        }
-
-        .thumbnail-preview .video-title {
-            margin-top: 0.5rem;
-            font-size: 1rem;
-            color: #666;
+            color: #ef4444;
         }
 
         .progress-container {
             display: none;
-            margin-top: 1rem;
-            padding: 1rem;
-            background-color: #f8f9fa;
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: var(--glass-bg);
             border-radius: var(--border-radius);
-            text-align: center;
+            border: 1px solid var(--glass-border);
+            backdrop-filter: blur(10px);
         }
 
         .progress-container.active {
             display: block;
+            animation: fadeIn 0.5s ease-out;
         }
 
         .progress-bar {
             width: 100%;
             height: 8px;
-            background-color: #e9ecef;
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 4px;
             overflow: hidden;
-            margin: 0.5rem 0;
-        }
-
-        .progress-fill {
-            width: 0%;
-            height: 100%;
-            background-color: var(--primary-color);
-            transition: width 0.3s ease;
-        }
-
-        .progress-text {
-            font-size: 0.9rem;
-            color: #666;
             margin-bottom: 0.5rem;
         }
 
-        .progress-percentage {
-            font-weight: 600;
-            color: var(--primary-color);
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
+            width: 0%;
+            transition: width 0.3s ease-out;
+        }
+
+        .progress-text {
+            display: flex;
+            justify-content: space-between;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
         }
 
         .progress-status {
-            font-size: 0.8rem;
-            color: #666;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
             margin-top: 0.5rem;
+            text-align: center;
         }
 
         .spinner {
             display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #f3f3f3;
+            width: 1.25rem;
+            height: 1.25rem;
+            border: 2px solid var(--border-color);
             border-top: 2px solid var(--primary-color);
             border-radius: 50%;
             animation: spin 1s linear infinite;
-            margin-right: 8px;
-            vertical-align: middle;
         }
 
         @keyframes spin {
@@ -426,27 +525,52 @@
             100% { transform: rotate(360deg); }
         }
 
-        .format-section {
-            margin-top: 1.5rem;
-        }
-
-        .format-section-title {
-            font-size: 1.1rem;
-            font-weight: 600;
-            color: var(--text-color);
-            margin-bottom: 0.75rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid #eee;
-        }
-
         .download-options {
             display: flex;
             gap: 1rem;
-            margin-top: 1rem;
+            margin-top: 2rem;
         }
 
         .download-options button {
             flex: 1;
+            font-size: 1.1rem;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .video-preview {
+                flex-direction: column;
+                align-items: center;
+                gap: 1.5rem;
+            }
+
+            .thumbnail {
+                width: 100%;
+                max-width: 360px;
+            }
+
+            .video-details {
+                text-align: center;
+            }
+
+            .format-list {
+                grid-template-columns: 1fr;
+            }
+
+            .download-options {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
@@ -469,10 +593,6 @@
                     <span class="url-status" id="urlStatus"></span>
                 </div>
             </div>
-            <div class="thumbnail-preview" id="thumbnailPreview">
-                <img id="previewThumbnail" src="" alt="Video thumbnail">
-                <div class="video-title" id="previewTitle"></div>
-            </div>
             <button type="submit" id="checkBtn">Check Available Formats</button>
         </form>
 
@@ -481,7 +601,10 @@
                 <img class="thumbnail" id="videoThumbnail" src="" alt="Video thumbnail">
                 <div class="video-details">
                     <h2 class="video-title" id="videoTitle"></h2>
-                    <div class="video-duration" id="videoDuration"></div>
+                    <div class="video-duration" id="videoDuration">
+                        <i class="fas fa-clock"></i>
+                        <span id="durationText"></span>
+                    </div>
                 </div>
             </div>
             <div class="format-options" id="formatOptions">
@@ -507,16 +630,14 @@
         <div class="error" id="errorMessage"></div>
 
         <div class="progress-container" id="progressContainer">
-            <div class="progress-text">
-                Downloading: <span class="progress-percentage" id="progressPercentage">0%</span>
-            </div>
             <div class="progress-bar">
                 <div class="progress-fill" id="progressFill"></div>
             </div>
-            <div class="progress-status" id="progressStatus">
-                <span class="spinner"></span>
-                Preparing download...
+            <div class="progress-text">
+                <span id="progressPercentage">0%</span>
+                <span id="downloadSpeed">0 MB/s</span>
             </div>
+            <div class="progress-status" id="progressStatus">Starting download...</div>
         </div>
     </div>
 
@@ -525,6 +646,8 @@
         let selectedVideoFormat = null;
         let selectedAudioFormat = null;
         let debounceTimer = null;
+        let currentVideoId = null;
+        let progressInterval = null;
 
         function formatDuration(seconds) {
             const hours = Math.floor(seconds / 3600);
@@ -564,22 +687,55 @@
             }
         }
 
+        function formatSpeed(bytesPerSecond) {
+            if (!bytesPerSecond) return '0 MB/s';
+            const mbps = (bytesPerSecond / (1024 * 1024)).toFixed(2);
+            return `${mbps} MB/s`;
+        }
+
+        function updateProgress() {
+            if (!currentVideoId) return;
+
+            fetch(`/progress/${currentVideoId}`)
+                .then(response => response.json())
+                .then(data => {
+                    const progressFill = document.getElementById('progressFill');
+                    const progressPercentage = document.getElementById('progressPercentage');
+                    const downloadSpeed = document.getElementById('downloadSpeed');
+                    const progressStatus = document.getElementById('progressStatus');
+                    const progressContainer = document.getElementById('progressContainer');
+
+                    progressFill.style.width = `${data.progress}%`;
+                    progressPercentage.textContent = `${data.progress}%`;
+                    downloadSpeed.textContent = formatSpeed(data.speed);
+
+                    if (data.status === 'finished') {
+                        progressStatus.textContent = 'Download completed!';
+                        clearInterval(progressInterval);
+                        progressContainer.classList.remove('active');
+                    } else if (data.status === 'downloading') {
+                        progressStatus.textContent = 'Downloading...';
+                        progressContainer.classList.add('active');
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching progress:', error);
+                    clearInterval(progressInterval);
+                });
+        }
+
         document.getElementById('videoUrl').addEventListener('input', async function(e) {
             const url = e.target.value;
             const urlStatus = document.getElementById('urlStatus');
             const urlLoader = document.getElementById('urlLoader');
-            const thumbnailPreview = document.getElementById('thumbnailPreview');
-            const previewThumbnail = document.getElementById('previewThumbnail');
-            const previewTitle = document.getElementById('previewTitle');
             
             // Clear previous timer
             if (debounceTimer) {
                 clearTimeout(debounceTimer);
             }
             
-            // Hide status and thumbnail preview initially
+            // Hide status initially
             urlStatus.style.display = 'none';
-            thumbnailPreview.classList.remove('active');
             
             // Validate URL format
             if (validateYouTubeUrl(url)) {
@@ -596,10 +752,6 @@
                         urlStatus.innerHTML = '✓';
                         urlStatus.className = 'url-status valid';
                         urlStatus.style.display = 'block';
-                        
-                        previewThumbnail.src = data.thumbnail;
-                        previewTitle.textContent = data.title;
-                        thumbnailPreview.classList.add('active');
                     } else {
                         urlStatus.innerHTML = '✕';
                         urlStatus.className = 'url-status invalid';
@@ -641,33 +793,20 @@
                 if (response.ok) {
                     document.getElementById('videoTitle').textContent = data.title;
                     document.getElementById('videoThumbnail').src = data.thumbnail;
-                    document.getElementById('videoDuration').textContent = `Duration: ${formatDuration(data.duration)}`;
+                    document.getElementById('durationText').textContent = formatDuration(data.duration);
                     
                     // Video formats
                     const formatList = document.getElementById('formatList');
                     formatList.innerHTML = '';
                     
                     data.formats.forEach(format => {
-                        const option = document.createElement('div');
-                        option.className = `format-option ${format.is_original ? 'original' : ''}`;
-                        option.innerHTML = `
-                            ${format.height}p ${format.format_note || ''}
-                            ${format.is_original ? '<span class="format-quality-badge">Original</span>' : ''}
-                            <div class="format-note">${format.ext.toUpperCase()}</div>
-                            <div class="format-audio-status ${format.has_audio ? 'has-audio' : 'muted'}">
-                                <i class="fas ${format.has_audio ? 'fa-volume-up' : 'fa-volume-mute'}"></i>
-                                ${format.has_audio ? 'With Audio' : 'No Audio'}
-                            </div>
-                        `;
-                        option.dataset.formatId = format.format_id;
-                        
+                        const option = createFormatOption(format);
                         option.addEventListener('click', () => {
                             document.querySelectorAll('.format-option:not(.audio)').forEach(opt => opt.classList.remove('selected'));
                             option.classList.add('selected');
                             selectedVideoFormat = format.format_id;
                             document.getElementById('downloadVideoBtn').style.display = 'block';
                         });
-                        
                         formatList.appendChild(option);
                     });
 
@@ -679,9 +818,32 @@
                         data.audio_formats.forEach(format => {
                             const option = document.createElement('div');
                             option.className = 'format-option audio';
+                            
+                            // Get audio details
+                            const audioDetails = [];
+                            if (format.abr) audioDetails.push(`${format.abr}kbps`);
+                            if (format.asr) audioDetails.push(`${format.asr}Hz`);
+                            if (format.acodec && format.acodec !== 'none') audioDetails.push(format.acodec);
+                            
+                            // Get file size
+                            const fileSize = format.filesize ? 
+                                (format.filesize / (1024 * 1024)).toFixed(2) + ' MB' : 
+                                'N/A';
+                            
+                            // Get format icon based on extension
+                            const formatIcon = getFormatIcon(format.ext);
+                            
                             option.innerHTML = `
-                                Audio ${format.abr ? format.abr + 'kbps' : 'Best'}
-                                <div class="format-note">${format.ext.toUpperCase()}</div>
+                                <div class="format-header">
+                                    ${audioDetails.join(' • ')}
+                                </div>
+                                <div class="format-details">
+                                    <div class="format-note">
+                                        <i class="${formatIcon}"></i> ${format.ext.toUpperCase()}
+                                        <span class="format-size">${fileSize}</span>
+                                    </div>
+                                    ${format.format_note ? `<div class="format-codec">${format.format_note}</div>` : ''}
+                                </div>
                             `;
                             option.dataset.formatId = format.format_id;
                             
@@ -700,6 +862,12 @@
                     
                     videoInfo.classList.add('active');
                     document.getElementById('formatOptions').classList.add('active');
+
+                    currentVideoId = data.video_id;
+                    if (progressInterval) {
+                        clearInterval(progressInterval);
+                    }
+                    progressInterval = setInterval(updateProgress, 1000);
                 } else {
                     throw new Error(data.error || 'Failed to fetch video formats');
                 }
@@ -712,22 +880,71 @@
             }
         });
 
-        function updateProgress(percentage, status) {
-            const progressContainer = document.getElementById('progressContainer');
-            const progressFill = document.getElementById('progressFill');
-            const progressPercentage = document.getElementById('progressPercentage');
-            const progressStatus = document.getElementById('progressStatus');
+        function createFormatOption(format) {
+            const option = document.createElement('div');
+            option.className = `format-option ${format.is_original ? 'original' : ''}`;
             
-            progressContainer.classList.add('active');
-            progressFill.style.width = `${percentage}%`;
-            progressPercentage.textContent = `${percentage}%`;
+            // Get format details
+            const formatDetails = [];
+            if (format.height) formatDetails.push(`${format.height}p`);
+            if (format.format_note) formatDetails.push(format.format_note);
+            if (format.vcodec && format.vcodec !== 'none') formatDetails.push(format.vcodec);
+            if (format.acodec && format.acodec !== 'none') formatDetails.push(format.acodec);
             
-            // Only show spinner for non-downloading states
-            if (status !== 'Downloading...') {
-                progressStatus.innerHTML = `<span class="spinner"></span>${status}`;
-            } else {
-                progressStatus.innerHTML = status;
-            }
+            // Get file size
+            const fileSize = format.filesize ? 
+                (format.filesize / (1024 * 1024)).toFixed(2) + ' MB' : 
+                'N/A';
+            
+            // Get format icon based on extension
+            const formatIcon = getFormatIcon(format.ext);
+            
+            option.innerHTML = `
+                <div class="format-header">
+                    ${formatDetails.join(' • ')}
+                    ${format.is_original ? '<span class="format-quality-badge">Original</span>' : ''}
+                </div>
+                <div class="format-details">
+                    <div class="format-note">
+                        <i class="${formatIcon}"></i> ${format.ext.toUpperCase()}
+                        <span class="format-size">${fileSize}</span>
+                    </div>
+                    <div class="format-audio-status ${format.has_audio ? 'has-audio' : 'muted'}">
+                        <i class="fas ${format.has_audio ? 'fa-volume-up' : 'fa-volume-mute'}"></i>
+                        ${format.has_audio ? 'With Audio' : 'No Audio (Will merge with best audio)'}
+                    </div>
+                    ${format.format_note ? `<div class="format-codec">${format.format_note}</div>` : ''}
+                </div>
+            `;
+            option.dataset.formatId = format.format_id;
+            
+            return option;
+        }
+
+        function getFormatIcon(extension) {
+            const icons = {
+                // Video formats
+                'mp4': 'fas fa-file-video',
+                'webm': 'fas fa-file-video',
+                'mkv': 'fas fa-file-video',
+                'avi': 'fas fa-file-video',
+                'mov': 'fas fa-file-video',
+                'wmv': 'fas fa-file-video',
+                'flv': 'fas fa-file-video',
+                'm4v': 'fas fa-file-video',
+                
+                // Audio formats
+                'mp3': 'fas fa-file-audio',
+                'm4a': 'fas fa-file-audio',
+                'wav': 'fas fa-file-audio',
+                'ogg': 'fas fa-file-audio',
+                'wma': 'fas fa-file-audio',
+                'aac': 'fas fa-file-audio',
+                'flac': 'fas fa-file-audio',
+                'alac': 'fas fa-file-audio'
+            };
+            
+            return icons[extension.toLowerCase()] || 'fas fa-file';
         }
 
         // Video download handler
@@ -758,6 +975,10 @@
             try {
                 updateProgress(0, 'Starting download...');
 
+                // Get the selected format
+                const selectedFormat = document.querySelector(`.format-option[data-format-id="${formatId}"]`);
+                const isMuted = selectedFormat.querySelector('.format-audio-status.muted') !== null;
+
                 // Create a form to submit the download request
                 const form = document.createElement('form');
                 form.method = 'POST';
@@ -778,13 +999,22 @@
                 formatInput.value = formatId;
                 form.appendChild(formatInput);
 
+                // Add merge_audio flag if the video is muted
+                if (isMuted) {
+                    const mergeInput = document.createElement('input');
+                    mergeInput.type = 'hidden';
+                    mergeInput.name = 'merge_audio';
+                    mergeInput.value = 'true';
+                    form.appendChild(mergeInput);
+                }
+
                 // Add form to document and submit
                 document.body.appendChild(form);
                 form.submit();
                 document.body.removeChild(form);
 
                 // Show progress message
-                updateProgress(50, 'Downloading...');
+                updateProgress(50, isMuted ? 'Downloading and merging audio...' : 'Downloading...');
 
             } catch (error) {
                 errorMessage.textContent = 'Download failed. Please try again.';
