@@ -44,4 +44,15 @@ downloads/
 
 # Logs
 *.log
-logs/ 
+logs/
+
+# Production files
+*.log
+access.log
+error.log
+downloads/*
+.env
+venv/
+__pycache__/
+*.pyc
+instance/ 

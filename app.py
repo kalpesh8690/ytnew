@@ -6,6 +6,7 @@ import tempfile
 import logging
 from functools import lru_cache
 import hashlib
+import browser_cookie3
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -25,6 +26,67 @@ def get_cache_key(url):
     """Generate a cache key for the URL"""
     return hashlib.md5(url.encode()).hexdigest()
 
+def get_youtube_cookies():
+    """Get YouTube cookies from installed browsers"""
+    cookie_file = None
+    temp_dir = tempfile.mkdtemp()
+    
+    try:
+        # Try to get cookies from various browsers
+        browsers = [
+            (browser_cookie3.chrome, "Chrome"),
+            (browser_cookie3.firefox, "Firefox"),
+            (browser_cookie3.edge, "Edge"),
+            (browser_cookie3.opera, "Opera"),
+            (browser_cookie3.brave, "Brave"),
+        ]
+        
+        for browser_func, browser_name in browsers:
+            try:
+                # Create a temporary cookie file
+                cookie_file = os.path.join(temp_dir, f"youtube_cookies_{browser_name.lower()}.txt")
+                
+                # Get cookies from browser
+                cookies = browser_func(domain_name=".youtube.com")
+                
+                # Write cookies to file in Netscape format
+                with open(cookie_file, 'w', encoding='utf-8') as f:
+                    f.write("# Netscape HTTP Cookie File\n")
+                    for cookie in cookies:
+                        if cookie.domain.startswith('.'):
+                            domain = cookie.domain
+                        else:
+                            domain = '.' + cookie.domain
+                            
+                        f.write(f"{domain}\tTRUE\t/\t{'TRUE' if cookie.secure else 'FALSE'}\t"
+                               f"{int(cookie.expires) if cookie.expires else 0}\t{cookie.name}\t{cookie.value}\n")
+                
+                logger.info(f"Successfully created cookie file from {browser_name}")
+                return cookie_file
+                
+            except Exception as e:
+                logger.debug(f"Could not get cookies from {browser_name}: {str(e)}")
+                if cookie_file and os.path.exists(cookie_file):
+                    try:
+                        os.remove(cookie_file)
+                    except:
+                        pass
+                cookie_file = None
+        
+        logger.warning("No browser cookies found for YouTube")
+        return None
+        
+    except Exception as e:
+        logger.error(f"Error in get_youtube_cookies: {str(e)}")
+        return None
+    finally:
+        # Clean up temp directory if no cookies were found
+        if not cookie_file and os.path.exists(temp_dir):
+            try:
+                os.rmdir(temp_dir)
+            except:
+                pass
+
 @lru_cache(maxsize=MAX_CACHE_SIZE)
 def get_video_info(url):
     """Get video information with caching"""
@@ -33,6 +95,11 @@ def get_video_info(url):
         "no_warnings": True,
         "extract_flat": True,
     }
+    
+    # Try to get cookies from browsers
+    cookie_file = get_youtube_cookies()
+    if cookie_file:
+        ydl_opts["cookiefile"] = cookie_file
     
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         try:
@@ -81,12 +148,18 @@ def get_video_info(url):
 def download_video(url, format_id, merge_audio=False):
     """Download video with error handling and cleanup"""
     temp_dir = tempfile.mkdtemp()
+    cookie_file = None
     try:
         ydl_opts = {
             "format": format_id,
             "outtmpl": os.path.join(temp_dir, "%(title)s.%(ext)s"),
             "merge_output_format": "mp4",
         }
+
+        # Try to get cookies from browsers
+        cookie_file = get_youtube_cookies()
+        if cookie_file:
+            ydl_opts["cookiefile"] = cookie_file
 
         if merge_audio:
             # Download video without audio
@@ -135,6 +208,14 @@ def download_video(url, format_id, merge_audio=False):
         logger.error(f"Error downloading video: {str(e)}")
         raise
     finally:
+        # Clean up cookie file
+        if cookie_file and os.path.exists(cookie_file):
+            try:
+                os.remove(cookie_file)
+                os.rmdir(os.path.dirname(cookie_file))
+            except Exception as e:
+                logger.error(f"Error cleaning up cookie file: {str(e)}")
+        
         # Clean up temporary directory
         for file in os.listdir(temp_dir):
             try:
@@ -150,6 +231,7 @@ def download_mp3(url, quality='best'):
     """Download audio and convert to MP3 with specified quality"""
     temp_dir = tempfile.mkdtemp()
     output_path = None
+    cookie_file = None
     try:
         quality_formats = {
             'best': 'bestaudio[ext=m4a]/bestaudio[ext=m4a]',
@@ -162,6 +244,11 @@ def download_mp3(url, quality='best'):
             "outtmpl": os.path.join(temp_dir, "%(title)s.%(ext)s"),
         }
         
+        # Try to get cookies from browsers
+        cookie_file = get_youtube_cookies()
+        if cookie_file:
+            ydl_opts["cookiefile"] = cookie_file
+
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=True)
             audio_path = ydl.prepare_filename(info)
@@ -193,6 +280,14 @@ def download_mp3(url, quality='best'):
         logger.error(f"Error downloading MP3: {str(e)}")
         raise
     finally:
+        # Clean up cookie file
+        if cookie_file and os.path.exists(cookie_file):
+            try:
+                os.remove(cookie_file)
+                os.rmdir(os.path.dirname(cookie_file))
+            except Exception as e:
+                logger.error(f"Error cleaning up cookie file: {str(e)}")
+                
         if output_path and not os.path.exists(output_path):
             try:
                 for file in os.listdir(temp_dir):

@@ -1,0 +1,14 @@
+[Unit]
+Description=YTNew Web Application
+After=network.target
+
+[Service]
+User=www-data
+Group=www-data
+WorkingDirectory=/opt/ytnew
+Environment="PATH=/opt/ytnew/venv/bin"
+ExecStart=/opt/ytnew/venv/bin/gunicorn --config gunicorn_config.py app:app
+Restart=always
+
+[Install]
+WantedBy=multi-user.target 
